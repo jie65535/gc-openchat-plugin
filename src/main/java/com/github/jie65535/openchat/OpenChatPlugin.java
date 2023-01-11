@@ -46,7 +46,7 @@ public final class OpenChatPlugin extends Plugin {
         var configFile = new File(getDataFolder(), "config.json");
         if (!configFile.exists()) {
             config = new OpenChatConfig();
-            try (var file = new FileWriter(configFile)) {
+            try (var file = new FileWriter(configFile, StandardCharsets.UTF_8)) {
                 file.write(JsonUtils.encode(config));
             } catch (IOException e) {
                 getLogger().error("[OpenChat] Unable to write to config file.");
@@ -58,7 +58,7 @@ public final class OpenChatPlugin extends Plugin {
                 config = JsonUtils.decode(Files.readString(configFile.toPath(), StandardCharsets.UTF_8), OpenChatConfig.class);
             } catch (Exception exception) {
                 config = new OpenChatConfig();
-                getLogger().error("[OpenChat] There was an error while trying to load the configuration from config.json. Please make sure that there are no syntax errors. If you want to start with a default configuration, delete your existing config.json.");
+                getLogger().error("[OpenChat] There was an error while trying to load the configuration from config.json. Please make sure that there are no syntax errors. If you want to start with a default configuration, delete your existing config.json.", exception);
             }
         }
     }
@@ -68,7 +68,6 @@ public final class OpenChatPlugin extends Plugin {
         return data;
     }
     private void loadData() {
-        data = new OpenChatData();
         var dataFile = new File(getDataFolder(), "data.json");
         if (!dataFile.exists()) {
             data = new OpenChatData();
@@ -78,12 +77,12 @@ public final class OpenChatPlugin extends Plugin {
                 data = JsonUtils.decode(Files.readString(dataFile.toPath(), StandardCharsets.UTF_8), OpenChatData.class);
             } catch (Exception exception) {
                 data = new OpenChatData();
-                getLogger().error("[OpenChat] There was an error while trying to load the data from data.json. Please make sure that there are no syntax errors. If you want to start with a default data, delete your existing data.json.");
+                getLogger().error("[OpenChat] There was an error while trying to load the data from data.json. Please make sure that there are no syntax errors. If you want to start with a default data, delete your existing data.json.", exception);
             }
         }
     }
     public void saveData() {
-        try (var file = new FileWriter(new File(getDataFolder(), "data.json"))) {
+        try (var file = new FileWriter(new File(getDataFolder(), "data.json"), StandardCharsets.UTF_8)) {
             file.write(JsonUtils.encode(data));
         } catch (IOException e) {
             getLogger().error("[OpenChat] Unable to write to data file.");
@@ -112,6 +111,7 @@ public final class OpenChatPlugin extends Plugin {
         getHandle().registerCommand(new ChatServerCommands());
         getHandle().registerCommand(new ChatPlayerCommands());
 
+        // Set my chat system.
         getServer().setChatSystem(new OpenChatSystem(getServer(), this));
 
         // Log a plugin status message.

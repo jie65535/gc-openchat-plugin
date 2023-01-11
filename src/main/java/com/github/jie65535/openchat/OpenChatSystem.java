@@ -14,6 +14,8 @@ public class OpenChatSystem extends ChatSystem {
 
     @Override
     public void sendPrivateMessage(Player player, int targetUid, String message) {
+        plugin.getLogger().info(String.format("onSendPrivateMessage: player=%s(%d) targetUid=%d message=%s",
+                player.getNickname(), player.getUid(), targetUid, message));
         // Sanity checks.
         if (message == null || message.length() == 0) {
             return;
@@ -33,6 +35,7 @@ public class OpenChatSystem extends ChatSystem {
      * @param message 消息内容
      */
     private void handlePlayerMessage(Player player, String message) {
+        plugin.getLogger().info("handlePlayerMessage enter");
         if (!plugin.getConfig().serverChatEnabled) {
             return;
         }
@@ -45,6 +48,8 @@ public class OpenChatSystem extends ChatSystem {
         // 处理发言频率限制与发言内容审查
         if (!checkMessageFre(player) || !checkMessageModeration(message)) {
             // 可提示也可忽略，忽略可让玩家以为自己发送成功，其实别人看不到
+            plugin.getLogger().warn(String.format("Message blocked: player=%s(%d): \"%s\"",
+                    player.getNickname(), player.getUid(), message));
             return;
         }
         // 格式化消息
@@ -55,7 +60,7 @@ public class OpenChatSystem extends ChatSystem {
         // 转发给其它玩家
         for (Player p : getServer().getPlayers().values()) {
             // 将消息发送给除了自己以外所有未关闭聊天的玩家
-            if (p != player && plugin.getData().offChatPlayers.contains(p.getUid())) {
+            if (p != player && !plugin.getData().offChatPlayers.contains(p.getUid())) {
                 p.dropMessage(message);
             }
         }
