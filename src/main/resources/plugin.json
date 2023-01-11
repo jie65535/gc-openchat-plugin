@@ -1,7 +1,7 @@
 {
-  "name": "opencommand-plugin",
-  "description": "Open command interface for third-party clients",
-  "version": "dev-1.5.0",
-  "mainClass": "com.github.jie65535.opencommand.OpenCommandPlugin",
-  "authors": ["jie65535", "方块君"]
+  "name": "openchat-plugin",
+  "description": "Chat with players in the server console",
+  "version": "0.1.0",
+  "mainClass": "com.github.jie65535.openchat.OpenChatPlugin",
+  "authors": ["jie65535"]
 }

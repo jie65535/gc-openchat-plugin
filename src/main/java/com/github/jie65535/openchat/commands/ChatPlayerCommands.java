@@ -1,5 +1,6 @@
-package com.github.jie65535.openchat;
+package com.github.jie65535.openchat.commands;
 
+import com.github.jie65535.openchat.OpenChatPlugin;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.game.player.Player;
@@ -19,9 +20,10 @@ public class ChatPlayerCommands implements CommandHandler {
         var set = OpenChatPlugin.getInstance().getData().offChatPlayers;
         if (subCommand.equals("on")) {
             set.remove(targetPlayer.getUid());
-            CommandHandler.sendMessage(sender);
+            CommandHandler.sendMessage(sender, "OK");
         } else if (subCommand.equals("off")) {
             set.add(targetPlayer.getUid());
+            CommandHandler.sendMessage(sender, "OK");
         }
     }
 }

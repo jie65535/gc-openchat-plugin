@@ -17,23 +17,25 @@
  */
 package com.github.jie65535.openchat;
 
-public class OpenChatConfig {
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+
+import java.util.Date;
+
+public class OpenChatData {
 
     /**
-     * 服务器聊天开关
+     * 禁言列表
+     * Key: Uid
+     * Value: End time
      */
-    public boolean serverChatEnabled = true;
+    public Int2ObjectMap<Date> banList = new Int2ObjectOpenHashMap<>();
 
     /**
-     * 服务器聊天消息格式
-     * {nickName}   为玩家昵称
-     * {uid}        为玩家UID
-     * {message}    为消息内容
+     * 关闭聊天的玩家集合
+     * Key: Uid
      */
-    public String serverChatFormat = "<color=#99CC99>{nickName}({uid})</color>: {message}";
-
-    /**
-     * 每分钟发言消息数限制
-     */
-    public int messageFreLimitPerMinute = 20;
+    public IntSet offChatPlayers = new IntOpenHashSet();
 }
