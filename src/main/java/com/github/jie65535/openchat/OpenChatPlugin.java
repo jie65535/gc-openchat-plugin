@@ -103,7 +103,7 @@ public final class OpenChatPlugin extends Plugin {
     public void onEnable() {
         // Register event listeners.
         new EventHandler<>(PlayerJoinEvent.class)
-            .priority(HandlerPriority.LOW)
+            .priority(HandlerPriority.NORMAL)
             .listener(EventListeners::onJoin)
             .register(this);
 
