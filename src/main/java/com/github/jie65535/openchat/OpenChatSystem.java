@@ -3,18 +3,18 @@ package com.github.jie65535.openchat;
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.game.chat.ChatSystem;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.server.game.GameServer;
 
 public class OpenChatSystem extends ChatSystem {
     private final OpenChatPlugin plugin;
-    public OpenChatSystem(GameServer server, OpenChatPlugin plugin) {
-        super(server);
+    public OpenChatSystem(OpenChatPlugin plugin) {
+        super(plugin.getServer());
         this.plugin = plugin;
+        plugin.getLogger().debug("OpenChatSystem created.");
     }
 
     @Override
     public void sendPrivateMessage(Player player, int targetUid, String message) {
-        plugin.getLogger().info(String.format("onSendPrivateMessage: player=%s(%d) targetUid=%d message=%s",
+        plugin.getLogger().debug(String.format("onSendPrivateMessage: player=%s(%d) targetUid=%d message=%s",
                 player.getNickname(), player.getUid(), targetUid, message));
         // Sanity checks.
         if (message == null || message.length() == 0) {
@@ -35,7 +35,7 @@ public class OpenChatSystem extends ChatSystem {
      * @param message 消息内容
      */
     private void handlePlayerMessage(Player player, String message) {
-        plugin.getLogger().info("handlePlayerMessage enter");
+        plugin.getLogger().debug("handlePlayerMessage enter");
         if (!plugin.getConfig().serverChatEnabled) {
             return;
         }

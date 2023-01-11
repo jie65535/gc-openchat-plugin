@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Date;
 
 public final class OpenChatPlugin extends Plugin {
@@ -55,7 +54,7 @@ public final class OpenChatPlugin extends Plugin {
             }
         } else {
             try {
-                config = JsonUtils.decode(Files.readString(configFile.toPath(), StandardCharsets.UTF_8), OpenChatConfig.class);
+                config = JsonUtils.loadToClass(configFile.toPath(), OpenChatConfig.class);
             } catch (Exception exception) {
                 config = new OpenChatConfig();
                 getLogger().error("[OpenChat] There was an error while trying to load the configuration from config.json. Please make sure that there are no syntax errors. If you want to start with a default configuration, delete your existing config.json.", exception);
@@ -74,7 +73,7 @@ public final class OpenChatPlugin extends Plugin {
             saveData();
         } else {
             try {
-                data = JsonUtils.decode(Files.readString(dataFile.toPath(), StandardCharsets.UTF_8), OpenChatData.class);
+                data = JsonUtils.loadToClass(dataFile.toPath(), OpenChatData.class);
             } catch (Exception exception) {
                 data = new OpenChatData();
                 getLogger().error("[OpenChat] There was an error while trying to load the data from data.json. Please make sure that there are no syntax errors. If you want to start with a default data, delete your existing data.json.", exception);
@@ -112,7 +111,7 @@ public final class OpenChatPlugin extends Plugin {
         getHandle().registerCommand(new ChatPlayerCommands());
 
         // Set my chat system.
-        getServer().setChatSystem(new OpenChatSystem(getServer(), this));
+        getServer().setChatSystem(new OpenChatSystem(this));
 
         // Log a plugin status message.
         getLogger().info("[OpenChat] Enabled.");
@@ -131,6 +130,6 @@ public final class OpenChatPlugin extends Plugin {
         if (getData().banList.isEmpty())
             return;
         var now = new Date();
-        getData().banList.int2ObjectEntrySet().removeIf(entry -> entry.getValue().before(now));
+        getData().banList.entrySet().removeIf(entry -> entry.getValue().before(now));
     }
 }

@@ -13,10 +13,6 @@ dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
-test {
-    useJUnitPlatform()
-}
-
 jar {
     jar.baseName = 'openchat'
 

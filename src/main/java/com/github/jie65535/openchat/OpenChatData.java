@@ -17,12 +17,9 @@
  */
 package com.github.jie65535.openchat;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class OpenChatData {
 
@@ -31,11 +28,11 @@ public class OpenChatData {
      * Key: Uid
      * Value: End time
      */
-    public Int2ObjectMap<Date> banList = new Int2ObjectOpenHashMap<>();
+    public HashMap<Integer, Date> banList = new HashMap<>();
 
     /**
      * 关闭聊天的玩家集合
      * Key: Uid
      */
-    public IntSet offChatPlayers = new IntOpenHashSet();
+    public HashSet<Integer> offChatPlayers = new HashSet<>();
 }
