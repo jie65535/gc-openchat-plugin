@@ -38,8 +38,8 @@ public class OpenChatSystem extends ChatSystem {
      * @param message 消息内容
      */
     private void handlePlayerMessage(Player player, String message) {
-        plugin.getLogger().debug("handlePlayerMessage enter");
-        if (!plugin.getConfig().serverChatEnabled) {
+        // 检查服务器是否启用聊天，或者玩家是否禁用聊天
+        if (!plugin.getConfig().serverChatEnabled || plugin.getData().offChatPlayers.contains(player.getUid())) {
             return;
         }
 
