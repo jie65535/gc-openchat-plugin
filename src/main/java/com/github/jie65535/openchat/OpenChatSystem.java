@@ -7,8 +7,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 
-import java.util.Date;
-
 public class OpenChatSystem extends ChatSystem {
     private final OpenChatPlugin plugin;
     public OpenChatSystem(OpenChatPlugin plugin) {
@@ -93,7 +91,7 @@ public class OpenChatSystem extends ChatSystem {
         var banList = plugin.getData().banList;
         // 检测是否正在禁言中
         if (banList.containsKey(player.getUid())) {
-            if (banList.get(player.getUid()).before(new Date())) {
+            if (banList.get(player.getUid()) < System.currentTimeMillis()) {
                 banList.remove(player.getUid());
             } else {
                 return true;

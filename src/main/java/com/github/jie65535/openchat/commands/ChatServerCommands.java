@@ -5,7 +5,6 @@ import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.game.player.Player;
 
-import java.sql.Date;
 import java.util.List;
 
 @Command(label = "serverchat",
@@ -26,21 +25,24 @@ public class ChatServerCommands implements CommandHandler {
         switch (subCommand) {
             case "on" -> {
                 plugin.getConfig().serverChatEnabled = true;
+                plugin.saveConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "off" -> {
                 plugin.getConfig().serverChatEnabled = false;
+                plugin.saveConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "unban", "unmute" -> {
                 plugin.getData().banList.remove(targetPlayer.getUid());
+                plugin.saveData();
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "ban", "mute" -> {
-                var time = new Date(2051190000);
+                var time = 2051190000L;
                 if (args.size() == 2) {
                     try {
-                        time = new Date(System.currentTimeMillis() + Integer.parseInt(args.get(1)) * 60_000L);
+                        time = System.currentTimeMillis() + Integer.parseInt(args.get(1)) * 60_000L;
                     } catch (NumberFormatException ignored) {
                         CommandHandler.sendTranslatedMessage(sender, "commands.ban.invalid_time");
                         return;
@@ -50,6 +52,7 @@ public class ChatServerCommands implements CommandHandler {
                     sendUsageMessage(sender);
                 } else {
                     plugin.getData().banList.put(targetPlayer.getUid(), time);
+                    plugin.saveData();
                     CommandHandler.sendMessage(sender, "OK");
                 }
             }
@@ -64,6 +67,7 @@ public class ChatServerCommands implements CommandHandler {
                     }
                 }
                 plugin.getConfig().messageFreLimitPerMinute = times;
+                plugin.saveConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }
         }

@@ -17,7 +17,6 @@
  */
 package com.github.jie65535.openchat;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -28,7 +27,7 @@ public class OpenChatData {
      * Key: Uid
      * Value: End time
      */
-    public HashMap<Integer, Date> banList = new HashMap<>();
+    public HashMap<Integer, Long> banList = new HashMap<>();
 
     /**
      * 关闭聊天的玩家集合
