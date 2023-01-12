@@ -54,7 +54,7 @@ public final class OpenChatPlugin extends Plugin {
             }
         }
     }
-    private void saveConfig() {
+    public void saveConfig() {
         var configFile = new File(getDataFolder(), "config.json");
         try (var file = new FileWriter(configFile, StandardCharsets.UTF_8)) {
             file.write(JsonUtils.encode(config));
