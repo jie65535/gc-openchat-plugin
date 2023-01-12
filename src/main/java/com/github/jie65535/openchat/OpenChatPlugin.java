@@ -113,7 +113,7 @@ public final class OpenChatPlugin extends Plugin {
         getServer().setChatSystem(new OpenChatSystem(this));
 
         // Log a plugin status message.
-        getLogger().info("[OpenChat] Enabled.");
+        getLogger().info("[OpenChat] Enabled, see https://github.com/jie65535/gc-openchat-plugin");
     }
 
     @Override

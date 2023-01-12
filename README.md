@@ -16,7 +16,7 @@
 
 ## 安装
 
-1. 在 Release 下载`jar`
+1. 在 [Release](https://github.com/jie65535/gc-openchat-plugin/releases) 下载`jar`
 2. 放入 `plugins` 文件夹即可
 
 ## 命令

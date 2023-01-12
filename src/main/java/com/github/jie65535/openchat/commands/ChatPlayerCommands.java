@@ -7,7 +7,7 @@ import emu.grasscutter.game.player.Player;
 
 import java.util.List;
 
-@Command(label = "chat", usage = { "<on|off>" })
+@Command(label = "chat", usage = { "<on|off>" }, permissionTargeted = "player.chat.others")
 public class ChatPlayerCommands implements CommandHandler {
     @Override
     public void execute(Player sender, Player targetPlayer, List<String> args) {

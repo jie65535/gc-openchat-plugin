@@ -16,7 +16,7 @@ Talking to the server account in the game is equivalent to sending to the world 
 
 ## Install
 
-1. Download the `jar` in Release.
+1. Download the `jar` in [Release](https://github.com/jie65535/gc-openchat-plugin/releases).
 2. Put it in the `plugins` folder.
 
 ## Commands
@@ -25,8 +25,8 @@ Player command:
 - `/chat off` block chat messages
 
 Server command (requires `server.chat.others` permissions) :
-- `/serverchat on` Enable server chat (default) (do not save)
-- `/serverchat off` Disable server chat (without saving)
+- `/serverchat on` Enable server chat (default) (not save)
+- `/serverchat off` Disable server chat (not saving)
 - `/serverchat ban|mute @uid [time(Minutes)]` Mute the specified player for the specified time (minutes) (optional)
 - `/serverchat unban|unmute @uid` Unmute a specified player
 
