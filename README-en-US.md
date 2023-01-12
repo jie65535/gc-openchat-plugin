@@ -9,9 +9,8 @@ Talking to the server account in the game is equivalent to sending to the world 
 ## TODO List
 - [x] Chat between players
 - [x] Chat management commands
-- [ ] Chat speech limit
+- [x] Speaking Frequency Limit
 - [ ] Chat Moderation
-- [ ] Console talk
 - [ ] Chat api _(~~OneBot api~~)_
 - [ ] ...
 

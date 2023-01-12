@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 public final class OpenChatPlugin extends Plugin {
     private static OpenChatPlugin instance;
@@ -121,15 +120,5 @@ public final class OpenChatPlugin extends Plugin {
     public void onDisable() {
         saveData();
         getLogger().info("[OpenChat] Disabled.");
-    }
-
-    /**
-     * 更新禁言列表，清理所有解除禁言用户
-     */
-    public void updateBanList() {
-        if (getData().banList.isEmpty())
-            return;
-        var now = new Date();
-        getData().banList.entrySet().removeIf(entry -> entry.getValue().before(now));
     }
 }
