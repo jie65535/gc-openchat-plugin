@@ -20,9 +20,11 @@ public class ChatPlayerCommands implements CommandHandler {
         var set = OpenChatPlugin.getInstance().getData().offChatPlayers;
         if (subCommand.equals("on")) {
             set.remove(targetPlayer.getUid());
+            OpenChatPlugin.getInstance().saveData();
             CommandHandler.sendMessage(sender, "OK");
         } else if (subCommand.equals("off")) {
             set.add(targetPlayer.getUid());
+            OpenChatPlugin.getInstance().saveData();
             CommandHandler.sendMessage(sender, "OK");
         }
     }

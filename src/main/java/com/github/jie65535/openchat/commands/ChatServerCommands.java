@@ -21,7 +21,7 @@ public class ChatServerCommands implements CommandHandler {
         }
 
         var plugin = OpenChatPlugin.getInstance();
-        var subCommand = args.get(0);
+        var subCommand = args.get(0).toLowerCase();
         switch (subCommand) {
             case "on" -> {
                 plugin.getConfig().serverChatEnabled = true;
