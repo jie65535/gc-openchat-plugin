@@ -46,4 +46,15 @@ public class OpenChatConfig {
      * 玩家加入消息
      */
     public String joinMessage = "本服已启用聊天，/chat on 开启（默认），/chat off 屏蔽";
+
+    /**
+     * 被禁言反馈消息
+     */
+    public String bannedFeedback = "你已经被禁言！";
+
+    /**
+     * 消息太频繁反馈消息
+     * {limit} 服务器设置的限制次数
+     */
+    public String msgTooFrequentFeedback = "服务器设置每分钟仅允许发言{limit}次";
 }

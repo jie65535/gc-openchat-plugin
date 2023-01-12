@@ -47,7 +47,14 @@ Server command (requires `server.chat.others` permissions) :
 
   // The content of the message sent when the player joins
   // Can be used to prompt the player how to switch the chat function
-  joinMessage: "本服已启用聊天，/chat on 开启（默认），/chat off 屏蔽"
+  joinMessage: "本服已启用聊天，/chat on 开启（默认），/chat off 屏蔽",
+
+  // Banned Feedback Message
+  bannedFeedback: "你已经被禁言！",
+
+  // Message too frequent feedback message
+  // {limit} messageFreLimitPerMinute
+  msgTooFrequentFeedback: "服务器设置每分钟仅允许发言{limit}次"
 }
 ```
 

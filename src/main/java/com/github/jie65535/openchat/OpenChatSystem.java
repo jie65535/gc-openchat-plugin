@@ -47,9 +47,11 @@ public class OpenChatSystem extends ChatSystem {
 
         // 检测是否正在禁言中
         if (checkIsBanning(player)) {
-            // 可提示也可忽略，忽略可让玩家以为自己发送成功，其实别人看不到
             plugin.getLogger().warn(String.format("Message blocked (banning): player=%s(%d): \"%s\"",
                     player.getNickname(), player.getUid(), message));
+            if (!plugin.getConfig().bannedFeedback.isEmpty()) {
+                player.dropMessage(plugin.getConfig().bannedFeedback);
+            }
             return;
         }
 
@@ -58,6 +60,11 @@ public class OpenChatSystem extends ChatSystem {
             // 可提示也可忽略，忽略可让玩家以为自己发送成功，其实别人看不到
             plugin.getLogger().warn(String.format("Message blocked (too often): player=%s(%d): \"%s\"",
                     player.getNickname(), player.getUid(), message));
+            if (!plugin.getConfig().msgTooFrequentFeedback.isEmpty()) {
+                player.dropMessage(
+                        plugin.getConfig().msgTooFrequentFeedback
+                                .replace("{limit}", String.valueOf(plugin.getConfig().messageFreLimitPerMinute)));
+            }
             return;
         }
 

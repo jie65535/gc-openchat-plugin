@@ -40,14 +40,18 @@ public class ChatServerCommands implements CommandHandler {
                 var time = new Date(2051190000);
                 if (args.size() == 2) {
                     try {
-                        time = new Date(System.currentTimeMillis() / 1000 + Integer.parseInt(args.get(1)) * 60L);
+                        time = new Date(System.currentTimeMillis() + Integer.parseInt(args.get(1)) * 60_000L);
                     } catch (NumberFormatException ignored) {
                         CommandHandler.sendTranslatedMessage(sender, "commands.ban.invalid_time");
                         return;
                     }
                 }
-                plugin.getData().banList.put(targetPlayer.getUid(), time);
-                CommandHandler.sendMessage(sender, "OK");
+                if (targetPlayer == null) {
+                    sendUsageMessage(sender);
+                } else {
+                    plugin.getData().banList.put(targetPlayer.getUid(), time);
+                    CommandHandler.sendMessage(sender, "OK");
+                }
             }
             case "limit" -> {
                 var times = 20;
