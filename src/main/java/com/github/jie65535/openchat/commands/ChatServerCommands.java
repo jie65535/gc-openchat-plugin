@@ -9,7 +9,7 @@ import java.util.List;
 
 @Command(label = "serverchat",
         aliases = { "sc" },
-        usage = { "on/off", "unban|unmute @uid", "ban|mute @uid [time(Minutes)]", "limit <timesPerMinute>" },
+        usage = { "on/off", "unban|unmute @uid", "ban|mute @uid [time(Minutes)]", "limit <timesPerMinute>", "reload" },
         permission = "server.chat",
         permissionTargeted = "server.chat.others")
 public class ChatServerCommands implements CommandHandler {
@@ -68,6 +68,10 @@ public class ChatServerCommands implements CommandHandler {
                 }
                 plugin.getConfig().messageFreLimitPerMinute = times;
                 plugin.saveConfig();
+                CommandHandler.sendMessage(sender, "OK");
+            }
+            case "reload" -> {
+                plugin.loadConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }
         }

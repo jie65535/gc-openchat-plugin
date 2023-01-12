@@ -30,6 +30,7 @@
 - `/serverchat ban @uid [时间（分钟）]` 禁言指定玩家
 - `/serverchat unban @uid` 解除指定玩家禁言
 - `/serverchat limit <次每分钟>` 设置发消息频率限制
+- `/serverchat reload` 重载配置文件
 
 `/serverchat` 可用别名 `/sc`
 

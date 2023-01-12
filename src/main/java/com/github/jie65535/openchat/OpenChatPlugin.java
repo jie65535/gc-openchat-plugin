@@ -40,7 +40,7 @@ public final class OpenChatPlugin extends Plugin {
     public OpenChatConfig getConfig() {
         return config;
     }
-    private void loadConfig() {
+    public void loadConfig() {
         var configFile = new File(getDataFolder(), "config.json");
         if (!configFile.exists()) {
             config = new OpenChatConfig();
