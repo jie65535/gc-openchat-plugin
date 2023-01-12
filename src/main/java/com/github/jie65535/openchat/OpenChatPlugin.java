@@ -44,13 +44,7 @@ public final class OpenChatPlugin extends Plugin {
         var configFile = new File(getDataFolder(), "config.json");
         if (!configFile.exists()) {
             config = new OpenChatConfig();
-            try (var file = new FileWriter(configFile, StandardCharsets.UTF_8)) {
-                file.write(JsonUtils.encode(config));
-            } catch (IOException e) {
-                getLogger().error("[OpenChat] Unable to write to config file.");
-            } catch (Exception e) {
-                getLogger().error("[OpenChat] Unable to save config file.");
-            }
+            saveConfig();
         } else {
             try {
                 config = JsonUtils.loadToClass(configFile.toPath(), OpenChatConfig.class);
@@ -58,6 +52,16 @@ public final class OpenChatPlugin extends Plugin {
                 config = new OpenChatConfig();
                 getLogger().error("[OpenChat] There was an error while trying to load the configuration from config.json. Please make sure that there are no syntax errors. If you want to start with a default configuration, delete your existing config.json.", exception);
             }
+        }
+    }
+    private void saveConfig() {
+        var configFile = new File(getDataFolder(), "config.json");
+        try (var file = new FileWriter(configFile, StandardCharsets.UTF_8)) {
+            file.write(JsonUtils.encode(config));
+        } catch (IOException e) {
+            getLogger().error("[OpenChat] Unable to write to config file.");
+        } catch (Exception e) {
+            getLogger().error("[OpenChat] Unable to save config file.");
         }
     }
 
@@ -119,6 +123,7 @@ public final class OpenChatPlugin extends Plugin {
     @Override
     public void onDisable() {
         saveData();
+        saveConfig();
         getLogger().info("[OpenChat] Disabled.");
     }
 }

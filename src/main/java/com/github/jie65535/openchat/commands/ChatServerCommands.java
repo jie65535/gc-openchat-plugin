@@ -10,7 +10,7 @@ import java.util.List;
 
 @Command(label = "serverchat",
         aliases = { "sc" },
-        usage = { "on/off", "unban|unmute @uid", "ban|mute @uid [time(Minutes)]"},
+        usage = { "on/off", "unban|unmute @uid", "ban|mute @uid [time(Minutes)]", "limit <timesPerMinute>" },
         permission = "server.chat",
         permissionTargeted = "server.chat.others")
 public class ChatServerCommands implements CommandHandler {
@@ -40,13 +40,26 @@ public class ChatServerCommands implements CommandHandler {
                 var time = new Date(2051190000);
                 if (args.size() == 2) {
                     try {
-                        time = new Date(System.currentTimeMillis() / 1000 + Integer.parseInt(args.get(0)) * 60L);
+                        time = new Date(System.currentTimeMillis() / 1000 + Integer.parseInt(args.get(1)) * 60L);
                     } catch (NumberFormatException ignored) {
                         CommandHandler.sendTranslatedMessage(sender, "commands.ban.invalid_time");
                         return;
                     }
                 }
                 plugin.getData().banList.put(targetPlayer.getUid(), time);
+                CommandHandler.sendMessage(sender, "OK");
+            }
+            case "limit" -> {
+                var times = 20;
+                if (args.size() == 2) {
+                    try {
+                        times = Integer.parseInt(args.get(1));
+                    } catch (NumberFormatException ignored) {
+                        sendUsageMessage(sender);
+                        return;
+                    }
+                }
+                plugin.getConfig().messageFreLimitPerMinute = times;
                 CommandHandler.sendMessage(sender, "OK");
             }
         }

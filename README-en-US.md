@@ -25,10 +25,11 @@ Player command:
 - `/chat off` block chat messages
 
 Server command (requires `server.chat.others` permissions) :
-- `/serverchat on` Enable server chat (default) (not save)
-- `/serverchat off` Disable server chat (not saving)
+- `/serverchat on` Enable server chat (default)
+- `/serverchat off` Disable server chat
 - `/serverchat ban|mute @uid [time(Minutes)]` Mute the specified player for the specified time (minutes) (optional)
 - `/serverchat unban|unmute @uid` Unmute a specified player
+- `/serverchat limit <timesPerMinute>` Set a frequency limit for sending messages
 
 `/serverchat` can be aliased as `/sc`
 

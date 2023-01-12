@@ -25,10 +25,11 @@
 - `/chat off` 屏蔽聊天消息
 
 管理用（需要 `server.chat.others` 权限）：
-- `/serverchat on` 启用服务器聊天（默认）（不保存）
-- `/serverchat off` 关闭服务器聊天（不保存）
-- `/serverchat ban @uid [time(Minutes)]` 禁言指定玩家指定时间（分钟）（可选）
+- `/serverchat on` 启用服务器聊天（默认）
+- `/serverchat off` 关闭服务器聊天
+- `/serverchat ban @uid [时间（分钟）]` 禁言指定玩家
 - `/serverchat unban @uid` 解除指定玩家禁言
+- `/serverchat limit <次每分钟>` 设置发消息频率限制
 
 `/serverchat` 可用别名 `/sc`
 
