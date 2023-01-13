@@ -98,6 +98,7 @@ public class ChatServerCommands implements CommandHandler {
                 plugin.loadConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }
+            default -> sendUsageMessage(sender);
         }
     }
 }

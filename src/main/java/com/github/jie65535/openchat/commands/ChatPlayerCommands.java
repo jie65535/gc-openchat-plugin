@@ -43,6 +43,8 @@ public class ChatPlayerCommands implements CommandHandler {
             set.add(targetPlayer.getUid());
             OpenChatPlugin.getInstance().saveData();
             CommandHandler.sendMessage(sender, "OK");
+        } else {
+            sendUsageMessage(sender);
         }
     }
 }
