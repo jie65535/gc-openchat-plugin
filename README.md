@@ -6,7 +6,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/jie65535/gc-openchat-plugin)](https://github.com/jie65535/gc-openchat-plugin/releases/latest)
 [![Build](https://github.com/jie65535/gc-openchat-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/jie65535/gc-openchat-plugin/actions/workflows/build.yml)
 
-中文 | [English](README-en-US.md)
+简中 | [繁中](README-zh-TW.md) | [EN](README-en-US.md) | [RU](README-ru-RU.md)
 
 让玩家在服务器内聊天
 

@@ -6,7 +6,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/jie65535/gc-openchat-plugin)](https://github.com/jie65535/gc-openchat-plugin/releases/latest)
 [![Build](https://github.com/jie65535/gc-openchat-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/jie65535/gc-openchat-plugin/actions/workflows/build.yml)
 
-[中文](README.md) | English
+[简中](README.md) | [繁中](README-zh-TW.md) | EN | [RU](README-ru-RU.md)
 
 Chat with players in the server
 
