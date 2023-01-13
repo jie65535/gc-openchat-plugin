@@ -1,3 +1,20 @@
+/*
+ * gc-openchat
+ * Copyright (C) 2022  jie65535
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.github.jie65535.openchat;
 
 import emu.grasscutter.GameConstants;
@@ -5,6 +22,8 @@ import emu.grasscutter.game.chat.ChatSystem;
 import emu.grasscutter.game.player.Player;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 
 public class OpenChatSystem extends ChatSystem {
@@ -13,6 +32,27 @@ public class OpenChatSystem extends ChatSystem {
         super(plugin.getServer());
         this.plugin = plugin;
         plugin.getLogger().debug("OpenChatSystem created.");
+    }
+
+    IntSet hasHistory = new IntOpenHashSet();
+
+    @Override
+    public void clearHistoryOnLogout(Player player) {
+        super.clearHistoryOnLogout(player);
+        hasHistory.remove(player.getUid());
+    }
+
+    @Override
+    public void handlePullRecentChatReq(Player player) {
+        super.handlePullRecentChatReq(player);
+        if (!hasHistory.contains(player.getUid())) {
+            hasHistory.add(player.getUid());
+            if (plugin.getConfig().sendJoinMessage && !plugin.getConfig().joinMessage.isEmpty()) {
+                plugin.getLogger().debug(String.format("send join message to %s(%d)",
+                        player.getNickname(), player.getUid()));
+                player.dropMessage(plugin.getConfig().joinMessage);
+            }
+        }
     }
 
     @Override

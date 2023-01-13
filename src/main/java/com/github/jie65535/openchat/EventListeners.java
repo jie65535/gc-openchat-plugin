@@ -1,23 +1,44 @@
+/*
+ * gc-openchat
+ * Copyright (C) 2022  jie65535
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.github.jie65535.openchat;
 
-import emu.grasscutter.server.event.player.PlayerJoinEvent;
+//import emu.grasscutter.server.event.player.PlayerJoinEvent;
+//import emu.grasscutter.server.scheduler.ServerTaskScheduler;
 
-public final class EventListeners {
-    private static final OpenChatPlugin plugin = OpenChatPlugin.getInstance();
-    private static final OpenChatConfig config = OpenChatPlugin.getInstance().getConfig();
+//public final class EventListeners {
+//    private static final OpenChatPlugin plugin = OpenChatPlugin.getInstance();
+//    private static final OpenChatConfig config = OpenChatPlugin.getInstance().getConfig();
 
-    public static void onJoin(PlayerJoinEvent event) {
-        // 检查聊天系统是否被其它插件替换
-        // 不再检查
-//        if (!(plugin.getServer().getChatSystem() instanceof OpenChatSystem)) {
-//            plugin.getLogger().warn("聊天系统已被其它插件更改，现已重置为 OpenChat !");
-//            plugin.getServer().setChatSystem(new OpenChatSystem(plugin));
-//        }
-
-        if (!config.sendJoinMessage || config.joinMessage.isEmpty())
-            return;
-        plugin.getLogger().debug(String.format("Player %s(%d) joined the game, send join message.",
-                event.getPlayer().getNickname(), event.getPlayer().getUid()));
-        event.getPlayer().dropMessage(config.joinMessage);
-    }
-}
+//    public static void onJoin(PlayerJoinEvent event) {
+//        // 检查聊天系统是否被其它插件替换
+//        // 不再检查
+////        if (!(plugin.getServer().getChatSystem() instanceof OpenChatSystem)) {
+////            plugin.getLogger().warn("聊天系统已被其它插件更改，现已重置为 OpenChat !");
+////            plugin.getServer().setChatSystem(new OpenChatSystem(plugin));
+////        }
+//
+//        if (!config.sendJoinMessage || config.joinMessage.isEmpty())
+//            return;
+//        var player = event.getPlayer();
+//        plugin.getLogger().debug(String.format("Player %s(%d) joined the game, send join message.",
+//                player.getNickname(), player.getUid()));
+//        plugin.getServer().getScheduler().scheduleDelayedTask(() -> {
+//            if (player.isOnline()) player.dropMessage(config.joinMessage);
+//        }, 60);
+//    }
+//}
