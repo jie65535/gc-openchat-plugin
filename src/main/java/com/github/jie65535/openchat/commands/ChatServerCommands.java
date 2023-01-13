@@ -26,9 +26,10 @@ import java.util.List;
 
 @Command(label = "serverchat",
         aliases = { "sc" },
-        usage = { "on/off", "unban|unmute @uid", "ban|mute @uid [time(Minutes)]", "limit <timesPerMinute>", "reload" },
+        usage = { "on/off", "unban|unmute @<UID>", "ban|mute @<UID> [time(Minutes)]", "limit <timesPerMinute>", "reload" },
         permission = "server.chat",
-        permissionTargeted = "server.chat.others")
+        permissionTargeted = "server.chat.others",
+        targetRequirement = Command.TargetRequirement.NONE)
 public class ChatServerCommands implements CommandHandler {
     @Override
     public void execute(Player sender, Player targetPlayer, List<String> args) {
@@ -51,11 +52,21 @@ public class ChatServerCommands implements CommandHandler {
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "unban", "unmute" -> {
+                if (targetPlayer == null) {
+                    sendUsageMessage(sender);
+                    CommandHandler.sendTranslatedMessage(sender, "commands.execution.need_target");
+                    return;
+                }
                 plugin.getData().banList.remove(targetPlayer.getUid());
                 plugin.saveData();
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "ban", "mute" -> {
+                if (targetPlayer == null) {
+                    sendUsageMessage(sender);
+                    CommandHandler.sendTranslatedMessage(sender, "commands.execution.need_target");
+                    return;
+                }
                 var time = 2051190000L;
                 if (args.size() == 2) {
                     try {
@@ -65,13 +76,9 @@ public class ChatServerCommands implements CommandHandler {
                         return;
                     }
                 }
-                if (targetPlayer == null) {
-                    sendUsageMessage(sender);
-                } else {
-                    plugin.getData().banList.put(targetPlayer.getUid(), time);
-                    plugin.saveData();
-                    CommandHandler.sendMessage(sender, "OK");
-                }
+                plugin.getData().banList.put(targetPlayer.getUid(), time);
+                plugin.saveData();
+                CommandHandler.sendMessage(sender, "OK");
             }
             case "limit" -> {
                 var times = 20;
