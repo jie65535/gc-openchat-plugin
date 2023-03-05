@@ -33,6 +33,7 @@ import java.util.List;
                 "limit <timesPerMinute>",
                 "reload",
                 "group <groupId>",
+                "op|deop <userId(QQ)>",
         },
         permission = "server.chat",
         permissionTargeted = "server.chat.others",
@@ -112,11 +113,27 @@ public class ChatServerCommands implements CommandHandler {
                 var groupId = 0L;
                 try {
                     groupId = Long.parseLong(args.get(1));
-                } catch (NumberFormatException ignored) {
+                } catch (Exception ignored) {
                     sendUsageMessage(sender);
                     return;
                 }
                 plugin.getConfig().groupId = groupId;
+                plugin.saveConfig();
+                CommandHandler.sendMessage(sender, "OK");
+            }
+            case "op", "deop" -> {
+                var adminId = 0L;
+                try {
+                    adminId = Long.parseLong(args.get(1));
+                } catch (Exception ignored) {
+                    sendUsageMessage(sender);
+                    return;
+                }
+                if (subCommand.equals("op")) {
+                    plugin.getConfig().adminIds.add(adminId);
+                } else {
+                    plugin.getConfig().adminIds.remove(adminId);
+                }
                 plugin.saveConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }

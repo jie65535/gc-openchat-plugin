@@ -17,6 +17,9 @@
  */
 package com.github.jie65535.openchat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OpenChatConfig {
 
     /**
@@ -127,10 +130,16 @@ public class OpenChatConfig {
      */
     public boolean isSendToGame = true;
 
-//    /**
-//     * 管理员账号
-//     */
-//    public Long adminId = 0L;
+    /**
+     * 管理员账号列表
+     * 所有来自管理员的消息，如果和命令前缀匹配，将作为控制台命令执行
+     */
+    public ArrayList<Long> adminIds = new ArrayList<>(List.of(0L));
+
+    /**
+     * 管理员执行命令前缀
+     */
+    public String adminPrefix = "/";
 
     /**
      * 是否启用登录消息
@@ -146,6 +155,19 @@ public class OpenChatConfig {
     public String loginMessageFormat = "{nickName}({uid}) 加入了服务器";
 
     /**
+     * 是否启用登录消息
+     * 当玩家登录服务器时，发送消息通知到游戏里
+     */
+    public boolean sendLoginMessageToGame = true;
+
+    /**
+     * 玩家登录服务器消息格式（游戏内）
+     * {nickName}   为玩家昵称
+     * {uid}        为玩家UID
+     */
+    public String loginMessageFormatInGame = "<color=#99CC99>{nickName}({uid}) 加入了游戏</color>";
+
+    /**
      * 是否启用登出消息
      * 当玩家离开服务器时，发送消息通知到群里
      */
@@ -157,4 +179,17 @@ public class OpenChatConfig {
      * {uid}        为玩家UID
      */
     public String logoutMessageFormat = "{nickName}({uid}) 离开了服务器";
+
+    /**
+     * 是否启用登出消息
+     * 当玩家登录服务器时，发送消息通知到游戏里
+     */
+    public boolean sendLogoutMessageToGame = true;
+
+    /**
+     * 玩家登出服务器消息格式（游戏内）
+     * {nickName}   为玩家昵称
+     * {uid}        为玩家UID
+     */
+    public String logoutMessageFormatInGame = "<color=#99CC99>{nickName}({uid}) 离开了游戏</color>";
 }

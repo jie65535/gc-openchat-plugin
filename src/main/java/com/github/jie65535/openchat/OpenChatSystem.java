@@ -20,6 +20,7 @@ package com.github.jie65535.openchat;
 import com.github.jie65535.minionebot.MiniOneBot;
 import com.github.jie65535.minionebot.events.GroupMessage;
 import emu.grasscutter.GameConstants;
+import emu.grasscutter.command.CommandMap;
 import emu.grasscutter.game.chat.ChatSystem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.event.player.PlayerJoinEvent;
@@ -65,11 +66,22 @@ public class OpenChatSystem extends ChatSystem {
      * @param event 事件
      */
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!plugin.getConfig().sendLoginMessageToBot || plugin.getConfig().groupId < 1) return;
         var player = event.getPlayer();
-        miniOneBot.sendGroupMessage(plugin.getConfig().groupId, plugin.getConfig().loginMessageFormat
-                .replace("{nickName}", player.getNickname())
-                .replace("{uid}", String.valueOf(player.getUid())));
+        // 发送上线消息到群里
+        if (plugin.getConfig().sendLoginMessageToBot && plugin.getConfig().groupId >= 1) {
+            miniOneBot.sendGroupMessage(plugin.getConfig().groupId, plugin.getConfig().loginMessageFormat
+                    .replace("{nickName}", player.getNickname())
+                    .replace("{uid}", String.valueOf(player.getUid())));
+        }
+
+        // 发送上线消息到游戏
+        if (plugin.getConfig().sendLoginMessageToGame) {
+            broadcastChatMessage(plugin.getConfig().loginMessageFormatInGame
+                            .replace("{nickName}", player.getNickname())
+                            .replace("{uid}", String.valueOf(player.getUid())),
+                    player.getUid()
+            );
+        }
     }
 
     /**
@@ -87,11 +99,21 @@ public class OpenChatSystem extends ChatSystem {
         super.clearHistoryOnLogout(player);
         hasHistory.remove(player.getUid());
 
-        // 发送离线消息
-        if (!plugin.getConfig().sendLogoutMessageToBot || plugin.getConfig().groupId < 1) return;
-        miniOneBot.sendGroupMessage(plugin.getConfig().groupId, plugin.getConfig().logoutMessageFormat
-                .replace("{nickName}", player.getNickname())
-                .replace("{uid}", String.valueOf(player.getUid())));
+        // 发送离线消息到群里
+        if (plugin.getConfig().sendLogoutMessageToBot && plugin.getConfig().groupId >= 1) {
+            miniOneBot.sendGroupMessage(plugin.getConfig().groupId, plugin.getConfig().logoutMessageFormat
+                    .replace("{nickName}", player.getNickname())
+                    .replace("{uid}", String.valueOf(player.getUid())));
+        }
+
+        // 发送离线消息到游戏
+        if (plugin.getConfig().sendLogoutMessageToGame) {
+            broadcastChatMessage(plugin.getConfig().logoutMessageFormatInGame
+                            .replace("{nickName}", player.getNickname())
+                            .replace("{uid}", String.valueOf(player.getUid())),
+                    player.getUid()
+            );
+        }
     }
 
     /**
@@ -196,19 +218,15 @@ public class OpenChatSystem extends ChatSystem {
                 .replace("{message}", message);
 
         // 转发给其它玩家
-        for (Player p : getServer().getPlayers().values()) {
-            // 将消息发送给除了自己以外所有未关闭聊天的玩家
-            if (p != player && !plugin.getData().offChatPlayers.contains(p.getUid())) {
-                p.dropMessage(formattedMessage);
-            }
-        }
+        broadcastChatMessage(formattedMessage, player.getUid());
 
         // 转发到机器人
-        if (!plugin.getConfig().isSendToBot || plugin.getConfig().groupId < 1) return;
-        miniOneBot.sendGroupMessage(plugin.getConfig().groupId, plugin.getConfig().gameToGroupFormat
-                .replace("{nickName}", player.getNickname())
-                .replace("{uid}", String.valueOf(player.getUid()))
-                .replace("{message}", message));
+        if (plugin.getConfig().isSendToBot && plugin.getConfig().groupId >= 1) {
+            miniOneBot.sendGroupMessage(plugin.getConfig().groupId, plugin.getConfig().gameToGroupFormat
+                    .replace("{nickName}", player.getNickname())
+                    .replace("{uid}", String.valueOf(player.getUid()))
+                    .replace("{message}", message));
+        }
     }
 
     /**
@@ -217,16 +235,34 @@ public class OpenChatSystem extends ChatSystem {
      * @param event 群消息事件
      */
     private void onGroupMessage(GroupMessage event) {
-        if (!plugin.getConfig().isSendToGame
-                || plugin.getConfig().groupId < 1
-                || event.groupId() != plugin.getConfig().groupId
-        ) return;
+        if (plugin.getConfig().groupId < 1 || event.groupId() != plugin.getConfig().groupId) return;
+
+        // 判断是否管理员发送的消息
+        if (plugin.getConfig().adminIds.contains(event.senderId())
+                && !plugin.getConfig().adminPrefix.isEmpty() // 判断是否符合命令前缀
+                && event.message().startsWith(plugin.getConfig().adminPrefix)
+        ) {
+            try {
+                logger.info("Command used by op [{}({})]: {}", event.senderCardOrNickname(), event.senderId(), event.message());
+                // 尝试执行管理员命令
+                CommandMap.getInstance().invoke(null, null,
+                        event.message().substring(plugin.getConfig().adminPrefix.length()));
+            } catch (Exception ex) {
+                logger.error("Administrator command execution failed", ex);
+            }
+            return;
+        }
+
+        // 检查开关
+        if (!plugin.getConfig().isSendToGame) return;
 
         // log messages
         if (plugin.getConfig().logChat) {
             logger.info("[MiniOneBot] {}: \"{}\"",
                     event.senderCardOrNickname(), event.message());
         }
+
+        // 发送给所有玩家
         broadcastChatMessage(plugin.getConfig().groupToGameFormat
                 .replace("{id}", String.valueOf(event.senderId()))
                 .replace("{name}", event.senderCardOrNickname())
@@ -238,9 +274,19 @@ public class OpenChatSystem extends ChatSystem {
      *
      * @param message 纯文本消息
      */
-    public void broadcastChatMessage(String message) {
+    private void broadcastChatMessage(String message) {
+        broadcastChatMessage(message, 0);
+    }
+
+    /**
+     * 广播聊天消息给除了指定玩家外所有玩家（未开启聊天玩家除外）
+     *
+     * @param message 纯文本消息
+     * @param exceptId 排除在外的Uid
+     */
+    private void broadcastChatMessage(String message, int exceptId) {
         for (Player p : getServer().getPlayers().values()) {
-            if (!plugin.getData().offChatPlayers.contains(p.getUid())) {
+            if (p.getUid() != exceptId && !plugin.getData().offChatPlayers.contains(p.getUid())) {
                 p.dropMessage(message);
             }
         }

@@ -41,6 +41,10 @@
 - `/serverchat limit <次每分钟>` 设置发消息频率限制
 - `/serverchat reload` 重载配置文件
 - `/serverchat group <groupId>` 设置互联群号
+- `/serverchat op|deop <userId(QQ)>` 设置或解除管理员
+  - 被设置为管理的账号可以在指定群内直接用管理前缀执行命令
+  - 命令前缀可在配置文件中设置 `adminPrefix` ，默认为 `/`，例 `/sc ban @10002`
+  - 目前在群内执行命令暂时没有回复，因为控制台执行过程只会log到控制台，不好捕获
 
 `/serverchat` 可用别名 `/sc`，例如 `/sc ban @xxx`
 
@@ -56,6 +60,13 @@
   - `universal: ws://your_websocket_universal.server` 为OpenChat地址，例如 `ws://127.0.0.1:443/openchat`
 
 建议使用 `Android Watch` 协议登录（在 `device.json` 中 `"protocol": 5` 修改为 `"protocol": 2` ）
+
+### 群服互联参考流程
+1. 装好插件启动后，记录下首次生成的 `Token`，或者自己填写一个 `Token`
+2. 下载 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 并初始化配置
+3. 在 `access-token: ''` 填写前面所述的 `Token` 内容
+4. 在 `ws-reverse` 选项下的 `universal` 填写GC的服务器地址加路径，例如 `ws://127.0.0.1:443/openchat`
+5. 配置你的Bot账号和登录协议，建议使用 `Android Watch` 登录。具体参考文档 [配置](https://docs.go-cqhttp.org/guide/config.html)。
 
 ---
 
@@ -139,8 +150,11 @@
   // 是否接收群消息并发送到游戏里
   "isSendToGame": true,
 
-  //    // 管理员账号
-  //    "adminId": 0,
+  // 管理员账号
+  "adminIds": [0],
+  
+  // 管理员执行命令前缀
+  "adminPrefix": "/",
 
   // 是否启用登录消息
   // 当玩家登录服务器时，发送消息通知到群里
@@ -151,6 +165,15 @@
   // {uid}        为玩家UID
   "loginMessageFormat": "{nickName}({uid}) 加入了服务器",
 
+  // 是否启用登录消息
+  // 当玩家登录服务器时，发送消息通知到群里
+  "sendLoginMessageToGame": true,
+
+  // 玩家登录服务器消息格式
+  // {nickName}   为玩家昵称
+  // {uid}        为玩家UID
+  "loginMessageFormatInGame": "<color=#99CC99>{nickName}({uid}) 加入了游戏</color>",
+
   // 是否启用登出消息
   // 当玩家离开服务器时，发送消息通知到群里
   "sendLogoutMessageToBot": true,
@@ -159,6 +182,15 @@
   // {nickName}   为玩家昵称
   // {uid}        为玩家UID
   "logoutMessageFormat": "{nickName}({uid}) 离开了服务器",
+
+  // 是否启用登出消息
+  // 当玩家离开服务器时，发送消息通知到群里
+  "sendLogoutMessageToGame": true,
+
+  // 玩家登出服务器消息格式
+  // {nickName}   为玩家昵称
+  // {uid}        为玩家UID
+  "logoutMessageFormatInGame": "<color=#99CC99>{nickName}({uid}) 离开了游戏</color>",
 }
 ```
 
