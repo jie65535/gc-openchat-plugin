@@ -74,16 +74,19 @@ public class ChatServerCommands implements CommandHandler {
                     CommandHandler.sendTranslatedMessage(sender, "commands.execution.need_target");
                     return;
                 }
-                var time = 2051190000L;
+                var timeMs = 0L;
                 if (args.size() == 2) {
                     try {
-                        time = System.currentTimeMillis() + Integer.parseInt(args.get(1)) * 60_000L;
+                        timeMs = System.currentTimeMillis() + Integer.parseInt(args.get(1)) * 60_000L;
                     } catch (NumberFormatException ignored) {
                         CommandHandler.sendTranslatedMessage(sender, "commands.ban.invalid_time");
                         return;
                     }
+                } else {
+                    // default ban 1 year
+                    timeMs = System.currentTimeMillis() + 1000L * 60L * 60L * 24L * 365L;
                 }
-                plugin.getData().banList.put(targetPlayer.getUid(), time);
+                plugin.getData().banList.put(targetPlayer.getUid(), timeMs);
                 plugin.saveData();
                 CommandHandler.sendMessage(sender, "OK");
             }
