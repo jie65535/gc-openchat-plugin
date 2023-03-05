@@ -26,7 +26,14 @@ import java.util.List;
 
 @Command(label = "serverchat",
         aliases = { "sc" },
-        usage = { "on/off", "unban|unmute @<UID>", "ban|mute @<UID> [time(Minutes)]", "limit <timesPerMinute>", "reload" },
+        usage = {
+                "on/off",
+                "unban|unmute @<UID>",
+                "ban|mute @<UID> [time(Minutes)]",
+                "limit <timesPerMinute>",
+                "reload",
+                "group <groupId>",
+        },
         permission = "server.chat",
         permissionTargeted = "server.chat.others",
         targetRequirement = Command.TargetRequirement.NONE)
@@ -96,6 +103,18 @@ public class ChatServerCommands implements CommandHandler {
             }
             case "reload" -> {
                 plugin.loadConfig();
+                CommandHandler.sendMessage(sender, "OK");
+            }
+            case "group" -> {
+                var groupId = 0L;
+                try {
+                    groupId = Long.parseLong(args.get(1));
+                } catch (NumberFormatException ignored) {
+                    sendUsageMessage(sender);
+                    return;
+                }
+                plugin.getConfig().groupId = groupId;
+                plugin.saveConfig();
                 CommandHandler.sendMessage(sender, "OK");
             }
             default -> sendUsageMessage(sender);

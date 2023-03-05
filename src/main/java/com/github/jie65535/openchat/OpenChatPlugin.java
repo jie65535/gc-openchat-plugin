@@ -20,6 +20,9 @@ package com.github.jie65535.openchat;
 import com.github.jie65535.openchat.commands.ChatPlayerCommands;
 import com.github.jie65535.openchat.commands.ChatServerCommands;
 import emu.grasscutter.plugin.Plugin;
+import emu.grasscutter.server.event.EventHandler;
+import emu.grasscutter.server.event.HandlerPriority;
+import emu.grasscutter.server.event.player.PlayerJoinEvent;
 import emu.grasscutter.utils.JsonUtils;
 
 import java.io.File;
@@ -101,10 +104,10 @@ public final class OpenChatPlugin extends Plugin {
     @Override
     public void onEnable() {
         // Register event listeners.
-//        new EventHandler<>(PlayerJoinEvent.class)
-//            .priority(HandlerPriority.NORMAL)
-//            .listener(EventListeners::onJoin)
-//            .register(this);
+        new EventHandler<>(PlayerJoinEvent.class)
+            .priority(HandlerPriority.NORMAL)
+            .listener(EventListeners::onJoin)
+            .register(this);
 
         // Register commands.
         getHandle().registerCommand(new ChatServerCommands());

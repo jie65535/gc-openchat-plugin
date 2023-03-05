@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.github.jie65535.openchat'
-version 'dev-0.1.0'
+version 'dev-0.2.0'
 
 repositories {
     mavenCentral()

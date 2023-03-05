@@ -18,9 +18,10 @@
 - [x] 玩家间聊天
 - [x] 聊天管理命令
 - [x] 发言频率限制
+- [x] 聊天api (OneBot)
+- [x] 玩家上下线提醒
+- [ ] 指定管理账号在群内执行控制台命令
 - [ ] 聊天内容审查
-- [ ] 聊天api _(~~OneBot api~~)_
-- [ ] ...
 
 ## 安装
 
@@ -39,37 +40,125 @@
 - `/serverchat unban @uid` 解除指定玩家禁言
 - `/serverchat limit <次每分钟>` 设置发消息频率限制
 - `/serverchat reload` 重载配置文件
+- `/serverchat group <groupId>` 设置互联群号
 
-`/serverchat` 可用别名 `/sc`
+`/serverchat` 可用别名 `/sc`，例如 `/sc ban @xxx`
 
+## 群服互联
 
-## 配置
+推荐使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) ，[快速开始](https://docs.go-cqhttp.org/guide/quick_start.htm)
+
+![群服互联聊天示例](/doc/Chat-OneBot.png)
+
+除了登录设置外，需[配置](https://docs.go-cqhttp.org/guide/config.html) `config.yml` 中以下内容
+- `access-token: ''` 为插件配置中的token
+- `ws-reverse:`
+  - `universal: ws://your_websocket_universal.server` 为OpenChat地址，例如 `ws://127.0.0.1:443/openchat`
+
+建议使用 `Android Watch` 协议登录（在 `device.json` 中 `"protocol": 5` 修改为 `"protocol": 2` ）
+
+---
+
+## 插件配置
 ```json5
 {
   // 服务器聊天开关
-  serverChatEnabled: true,
+  "serverChatEnabled": true,
   
   // 服务器聊天消息格式
   // {nickName}   为玩家昵称
   // {uid}        为玩家UID
   // {message}    为消息内容
-  serverChatFormat: "<color=#99CC99>{nickName}({uid})</color>: {message}",
+  "serverChatFormat": "<color=#99CC99>{nickName}({uid})</color>: {message}",
   
   // 每分钟发言消息数限制
-  messageFreLimitPerMinute: 20,
+  "messageFreLimitPerMinute": 20,
   
   // 是否在玩家加入时发送消息
-  sendJoinMessage: true,
+  "sendJoinMessage": true,
   
   // 玩家加入时发送消息
-  joinMessage: "本服已启用聊天，/chat on 开启（默认），/chat off 屏蔽",
+  "joinMessage": "本服已启用聊天，/chat on 开启（默认），/chat off 屏蔽",
 
   // 被禁言反馈消息
-  bannedFeedback: "你已经被禁言！",
+  "bannedFeedback": "你已经被禁言！",
 
   // 消息太频繁反馈消息
   // {limit} 服务器设置的限制次数
-  msgTooFrequentFeedback: "服务器设置每分钟仅允许发言{limit}次"
+  "msgTooFrequentFeedback": "服务器设置每分钟仅允许发言{limit}次",
+  
+  // 是否将聊天log
+  "logChat": true,
+
+  // WebSocket Access Token
+  // 安全令牌，仅允许授权的连接
+  // 如果为空将会在启动时自动生成一个32位随机令牌并显示在控制台
+  "wsToken": "",
+
+  // WebSocket Path
+  // 反向WS的路径，即机器人连接到本插件开放的WS接口路径
+  // 若不想开放WS，则留空，默认为 /openchat
+  // OneBot设置示例：ws://127.0.0.1:443/openchat
+  "wsPath": "/openchat",
+
+  //   // WebSocket Address
+  //   // 正向WS的地址，即本插件主动连接机器人开放的WS接口地址
+  //   // 示例：ws://127.0.0.1:8080
+  //   // 若不需要，则留空
+  //   // TODO：由于需要引入外部依赖，正向WS方式暂不实现
+  //    public String wsAddress: "",
+
+  // 群ID
+  // 可以使用指令 `/sc group <groupId>` 设定 
+  "groupId": 0,
+
+  // 群消息格式化
+  // {id}       为QQ号
+  // {name}     为群名片，如果为空则显示昵称
+  // {message}  为消息
+  "groupToGameFormat": "<color=#6699CC>[QQ]</color><color=#99CC99>{name}</color>: {message}",
+
+  // 服务器聊天消息格式
+  // {nickName}   为玩家昵称
+  // {uid}        为玩家UID
+  // {message}    为消息内容
+  "gameToGroupFormat": "[GC]{nickName}({uid}): {message}",
+
+  //    /**
+  //     * 频道ID
+  //     */
+  //    public String guildId: "",
+  //    /**
+  //     * 子频道ID集
+  //     */
+  //    public List<String> channelIds: new ArrayList<>(),
+
+  // 是否将游戏里的聊天转发到群聊
+  "isSendToBot": true,
+
+  // 是否接收群消息并发送到游戏里
+  "isSendToGame": true,
+
+  //    // 管理员账号
+  //    "adminId": 0,
+
+  // 是否启用登录消息
+  // 当玩家登录服务器时，发送消息通知到群里
+  "sendLoginMessageToBot": true,
+
+  // 玩家登录服务器消息格式
+  // {nickName}   为玩家昵称
+  // {uid}        为玩家UID
+  "loginMessageFormat": "{nickName}({uid}) 加入了服务器",
+
+  // 是否启用登出消息
+  // 当玩家离开服务器时，发送消息通知到群里
+  "sendLogoutMessageToBot": true,
+
+  // 玩家登出服务器消息格式
+  // {nickName}   为玩家昵称
+  // {uid}        为玩家UID
+  "logoutMessageFormat": "{nickName}({uid}) 离开了服务器",
 }
 ```
 

@@ -1,6 +1,6 @@
 /*
- * gc-openchat
- * Copyright (C) 2022  jie65535
+ * MiniOneBot
+ * Copyright (C) 2023  jie65535
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,15 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.github.jie65535.openchat;
+package com.github.jie65535.minionebot.events;
 
-import emu.grasscutter.server.event.player.PlayerJoinEvent;
-
-public final class EventListeners {
-    public static void onJoin(PlayerJoinEvent event) {
-        var cs = OpenChatPlugin.getInstance().getServer().getChatSystem();
-        if (cs instanceof OpenChatSystem) {
-            ((OpenChatSystem) cs).onPlayerJoin(event);
-        }
-    }
+public interface GroupMessageHandler {
+    void handleGroupMessage(GroupMessage event);
 }

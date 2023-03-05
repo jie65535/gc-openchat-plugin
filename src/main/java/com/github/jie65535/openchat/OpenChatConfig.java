@@ -57,4 +57,104 @@ public class OpenChatConfig {
      * {limit} 服务器设置的限制次数
      */
     public String msgTooFrequentFeedback = "服务器设置每分钟仅允许发言{limit}次";
+
+    /**
+     * 将聊天log
+     */
+    public boolean logChat = true;
+
+    /**
+     * WebSocket Access Token
+     * 安全令牌，仅允许授权的连接
+     * 如果为空将会在启动时自动生成一个32位随机令牌并显示在控制台
+     */
+    public String wsToken = "";
+
+    /**
+     * WebSocket Path
+     * 反向WS的路径，即机器人连接到本插件开放的WS接口路径
+     * 若不想开放WS，则留空，默认为 /openchat
+     * OneBot设置示例：ws://127.0.0.1:443/openchat
+     */
+    public String wsPath = "/openchat";
+
+//    /**
+//     * WebSocket Address
+//     * 正向WS的地址，即本插件主动连接机器人开放的WS接口地址
+//     * 示例：ws://127.0.0.1:8080
+//     * 若不需要，则留空
+//     * TODO：由于需要引入外部依赖，正向WS方式暂不实现
+//     */
+//    public String wsAddress = "";
+
+    /**
+     * 群ID
+     */
+    public Long groupId = 0L;
+
+    /**
+     * 群消息格式化
+     * {id}       为QQ号
+     * {name}     为群名片，如果为空则显示昵称
+     * {message}  为消息
+     */
+    public String groupToGameFormat = "<color=#6699CC>[QQ]</color><color=#99CC99>{name}</color>: {message}";
+
+    /**
+     * 服务器聊天消息格式
+     * {nickName}   为玩家昵称
+     * {uid}        为玩家UID
+     * {message}    为消息内容
+     */
+    public String gameToGroupFormat = "[GC]{nickName}({uid}): {message}";
+
+//    /**
+//     * 频道ID
+//     */
+//    public String guildId = "";
+//    /**
+//     * 子频道ID集
+//     */
+//    public List<String> channelIds = new ArrayList<>();
+
+    /**
+     * 是否将游戏里的聊天转发到群聊
+     */
+    public boolean isSendToBot = true;
+
+    /**
+     * 是否接收群消息并发送到游戏里
+     */
+    public boolean isSendToGame = true;
+
+//    /**
+//     * 管理员账号
+//     */
+//    public Long adminId = 0L;
+
+    /**
+     * 是否启用登录消息
+     * 当玩家登录服务器时，发送消息通知到群里
+     */
+    public boolean sendLoginMessageToBot = true;
+
+    /**
+     * 玩家登录服务器消息格式
+     * {nickName}   为玩家昵称
+     * {uid}        为玩家UID
+     */
+    public String loginMessageFormat = "{nickName}({uid}) 加入了服务器";
+
+    /**
+     * 是否启用登出消息
+     * 当玩家离开服务器时，发送消息通知到群里
+     */
+    public boolean sendLogoutMessageToBot = true;
+
+    /**
+     * 玩家登出服务器消息格式
+     * {nickName}   为玩家昵称
+     * {uid}        为玩家UID
+     */
+    public String logoutMessageFormat = "{nickName}({uid}) 离开了服务器";
 }
