@@ -107,6 +107,7 @@ public class ChatServerCommands implements CommandHandler {
             }
             case "reload" -> {
                 plugin.loadConfig();
+                plugin.loadSensitiveWordList();
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "group" -> {

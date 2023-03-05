@@ -63,10 +63,20 @@
 
 ### 群服互联参考流程
 1. 装好插件启动后，记录下首次生成的 `Token`，或者自己填写一个 `Token`
-2. 下载 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 并初始化配置
+2. 下载 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 并初始化配置，打开配置文件 `config.yml`
 3. 在 `access-token: ''` 填写前面所述的 `Token` 内容
 4. 在 `ws-reverse` 选项下的 `universal` 填写GC的服务器地址加路径，例如 `ws://127.0.0.1:443/openchat`
-5. 配置你的Bot账号和登录协议，建议使用 `Android Watch` 登录。具体参考文档 [配置](https://docs.go-cqhttp.org/guide/config.html)。
+5. 配置你的Bot账号和登录协议，建议使用 `Android Watch` 登录。具体参考文档 [配置](https://docs.go-cqhttp.org/guide/config.html)。（在 `device.json` 中 `"protocol": 5` 修改为 `"protocol": 2` ）
+6. 在GC中使用 `/sc group <groupId>` 来设置要互联的群聊
+7. 在GC中使用 `/sc op <userId(QQ)>` 来设置管理员账号
+8. 现在，理论上已经完成了群服互联，在群里可以看到玩家上下线和聊天，同时玩家也可以在游戏里看到群里聊天，
+你还可以在群里用默认前缀 `/` 来执行命令，
+但是暂时**不会**回复结果，你可能需要自己看控制台来查看执行结果。
+
+
+_值得注意的是，本插件支持的是 [OneBot-v11](https://github.com/botuniverse/onebot-11) 协议，理论上所有支持OneBot-v11 [反向WebSocket](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 的机器人框架都可以连接，不仅限于cqhttp。_
+
+_TODO: 计划会出一个极简的纯对话协议，比OneBot更简单，方便第三方对接。_
 
 ---
 
@@ -194,3 +204,14 @@
 }
 ```
 
+# 敏感词过滤系统
+目前实现了一个最基础的敏感词过滤功能， 并附带了一个精简的敏感词库，
+在首次启动时会把词库释放到插件数据目录下。
+
+文件名叫 `SensitiveWordList.txt`，每行包含一个敏感词，你可以自己维护这个文件，修改后可以用 `/sc reload` 重新读取。
+
+当检测到游戏内玩家聊天中包含敏感词，将不会进行转发，并且会在控制台中打印。
+
+目前暂未设定惩罚机制，仅仅只是发出去别人看不到，自己不知道这个没发出去。
+
+如果你有更好的建议，欢迎[提交 issue](https://github.com/jie65535/gc-openchat-plugin/issues/new)

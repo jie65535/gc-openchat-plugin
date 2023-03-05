@@ -318,8 +318,7 @@ public class OpenChatSystem extends ChatSystem {
      * @return 是否合法合规
      */
     private boolean checkMessageModeration(String message) {
-        // TODO see https://github.com/houbb/sensitive-word
-        return !message.isEmpty();
+        return !plugin.getSensitiveWordFilter().isSensitive(message);
     }
 
     // region 发言频率限制

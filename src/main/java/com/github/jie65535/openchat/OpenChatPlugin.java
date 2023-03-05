@@ -19,22 +19,62 @@ package com.github.jie65535.openchat;
 
 import com.github.jie65535.openchat.commands.ChatPlayerCommands;
 import com.github.jie65535.openchat.commands.ChatServerCommands;
+import com.github.jie65535.openchat.utils.SensitiveWordFilter;
 import emu.grasscutter.plugin.Plugin;
 import emu.grasscutter.server.event.EventHandler;
 import emu.grasscutter.server.event.HandlerPriority;
 import emu.grasscutter.server.event.player.PlayerJoinEvent;
 import emu.grasscutter.utils.JsonUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Objects;
 
 public final class OpenChatPlugin extends Plugin {
     private static OpenChatPlugin instance;
     public static OpenChatPlugin getInstance() {
         return instance;
     }
+
+
+    @Override
+    public void onLoad() {
+        instance = this;
+        loadConfig();
+        loadData();
+        loadSensitiveWordList();
+        getLogger().info("[OpenChat] Loaded.");
+    }
+
+    @Override
+    public void onEnable() {
+        // Register event listeners.
+        new EventHandler<>(PlayerJoinEvent.class)
+                .priority(HandlerPriority.NORMAL)
+                .listener(EventListeners::onJoin)
+                .register(this);
+
+        // Register commands.
+        getHandle().registerCommand(new ChatServerCommands());
+        getHandle().registerCommand(new ChatPlayerCommands());
+
+        // Set my chat system.
+        getServer().setChatSystem(new OpenChatSystem(this));
+
+        // Log a plugin status message.
+        getLogger().info("[OpenChat] Enabled, see https://github.com/jie65535/gc-openchat-plugin");
+    }
+
+    @Override
+    public void onDisable() {
+        saveData();
+        saveConfig();
+        getLogger().info("[OpenChat] Disabled.");
+    }
+
+
+    // region config
 
     private OpenChatConfig config;
     public OpenChatConfig getConfig() {
@@ -65,6 +105,10 @@ public final class OpenChatPlugin extends Plugin {
         }
     }
 
+    // endregion
+
+    // region data
+
     private OpenChatData data;
     public OpenChatData getData() {
         return data;
@@ -93,37 +137,33 @@ public final class OpenChatPlugin extends Plugin {
         }
     }
 
-    @Override
-    public void onLoad() {
-        instance = this;
-        loadConfig();
-        loadData();
-        getLogger().info("[OpenChat] Loaded.");
+    // endregion
+
+    // region SensitiveWordFilter
+
+    private final SensitiveWordFilter sensitiveWordFilter = new SensitiveWordFilter();
+
+    public SensitiveWordFilter getSensitiveWordFilter() {
+        return sensitiveWordFilter;
+    }
+    private static final String SENSITIVE_WORD_LIST_FILE_NAME = "SensitiveWordList.txt";
+    public void loadSensitiveWordList() {
+        try {
+            var sensitiveWordListFile = new File(getDataFolder(), SENSITIVE_WORD_LIST_FILE_NAME);
+            if (!sensitiveWordListFile.exists()) {
+                var in = OpenChatPlugin.class.getClassLoader().getResourceAsStream(SENSITIVE_WORD_LIST_FILE_NAME);
+                Files.copy(Objects.requireNonNull(in), sensitiveWordListFile.toPath());
+                in.close();
+            }
+            var wordList = Files.readAllLines(sensitiveWordListFile.toPath());
+            for (var word : wordList) {
+                sensitiveWordFilter.addWord(word);
+            }
+            getLogger().info("[OpenChat] {} sensitive words loaded", wordList.size());
+        } catch (Exception ex) {
+            getLogger().error("[OpenChat] Failed to load sensitive word list!", ex);
+        }
     }
 
-    @Override
-    public void onEnable() {
-        // Register event listeners.
-        new EventHandler<>(PlayerJoinEvent.class)
-            .priority(HandlerPriority.NORMAL)
-            .listener(EventListeners::onJoin)
-            .register(this);
-
-        // Register commands.
-        getHandle().registerCommand(new ChatServerCommands());
-        getHandle().registerCommand(new ChatPlayerCommands());
-
-        // Set my chat system.
-        getServer().setChatSystem(new OpenChatSystem(this));
-
-        // Log a plugin status message.
-        getLogger().info("[OpenChat] Enabled, see https://github.com/jie65535/gc-openchat-plugin");
-    }
-
-    @Override
-    public void onDisable() {
-        saveData();
-        saveConfig();
-        getLogger().info("[OpenChat] Disabled.");
-    }
+    // endregion
 }
