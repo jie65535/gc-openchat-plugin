@@ -18,9 +18,11 @@ Talking to the server account in the game is equivalent to sending to the world 
 - [x] Chat between players
 - [x] Chat management commands
 - [x] Speaking Frequency Limit
-- [ ] Chat Moderation
-- [ ] Chat api _(~~OneBot api~~)_
-- [ ] ...
+- [x] Chat api (OneBot)
+- [x] Player on/offline broadcast
+- [x] Chat Moderation
+- [x] op execution commands
+- [ ] Chat api (Minimal)
 
 ## Install
 
@@ -39,8 +41,85 @@ Server command (requires `server.chat.others` permissions) :
 - `/serverchat unban|unmute @uid` Unmute a specified player
 - `/serverchat limit <timesPerMinute>` Set a frequency limit for sending messages
 - `/serverchat reload` reload config.json
+- `/serverchat group <groupId>` Set the connected group id
+- `/serverchat op|deop <userId(QQ)>` Set or remove op
+  - The account set as op can directly execute commands with the admin prefix in the specified group
+  - The command prefix can be set in the configuration file `adminPrefix`, the default is `/`, for example `/sc ban @10002`
+  - At present, there is no reply when executing commands in the group, because the console execution process will only log to the console, which is not easy to capture
 
 `/serverchat` can be aliased as `/sc`
+
+## Bot Connect
+![Bot Connect example](/doc/Chat-OneBot.png)
+
+### Connect | Bot -> OpenChat
+1. Create a WebSocket Client
+2. Add header `Authorization: Bearer **token**` for authentication connection
+3. Add header `X-Self-ID: 123456` to identify the connected bot account (optional)
+4. Connect to `/openchat`, for example `ws://127.0.0.1:443/openchat`
+
+### Message ([OneBot-v11](https://github.com/botuniverse/onebot-11))
+Only the fields used by the plugin are listed below
+#### Group message | Bot -> OpenChat
+```json
+{
+  "post_type": "message",
+  "message_type": "group",
+  "sub_type": "normal",
+  "group_id": 123456,
+  "raw_message": "Plain Message",
+  "sender": {
+    "role": "member",
+    "level": "71",
+    "user_id": 123456789,
+    "nickname": "NickName",
+    "title": "UserTitle",
+    "card": "UserCard"
+  }
+}
+```
+
+#### Group message | OpenChat -> Bot
+```json
+{
+  "action": "send_group_msg",
+  "params": {
+    "group_id": 123456,
+    "message": "Plain Message",
+    "auto_escape": true
+  }
+}
+```
+
+#### Channel message | Bot -> OpenChat
+```json
+{
+  "post_type": "message",
+  "message_type": "group",
+  "sub_type": "normal",
+  "guildId": "123456",
+  "channel_id": "1234",
+  "user_id": "123456789",
+  "message": "Plain Message",
+  "sender": {
+    "user_id": 123456789,
+    "nickname": "NickName"
+  }
+}
+```
+
+#### Channel message | OpenChat -> Bot
+```json
+{
+  "action": "send_guild_channel_msg",
+  "params": {
+    "guild_id": "123456",
+    "channel_id": "1234",
+    "message": "Plain Message",
+    "auto_escape": true
+  }
+}
+```
 
 ## Config
 ```json5
@@ -63,7 +142,108 @@ Server command (requires `server.chat.others` permissions) :
 
   // Message too frequent feedback message
   // {limit} messageFreLimitPerMinute
-  msgTooFrequentFeedback: "服务器设置每分钟仅允许发言{limit}次"
+  msgTooFrequentFeedback: "服务器设置每分钟仅允许发言{limit}次",
+
+  // Whether to log the chat
+  "logChat": true,
+
+  // WebSocket Access Token
+  // security token, only authorized connections are allowed
+  // If it is empty, a 32-bit random token will be automatically generated at startup and displayed on the console
+  "wsToken": "",
+
+  // WebSocket Path
+  // The reverse WS path, that is, the bot connect to the WS interface path opened by this plug-in
+  // If you don't want to open WS, leave it empty, the default is "/openchat"
+  // OneBot setting example: ws://127.0.0.1:443/openchat
+  "wsPath": "/openchat",
+
+  // // WebSocket Address
+  // // Forward WS address, that is, the WS interface address opened by this plug-in to actively connect to the bot
+  // // Example: ws://127.0.0.1:8080
+  // // Leave blank if not required
+  // // TODO: Due to the need to introduce external dependencies, the forward WS method is not implemented yet
+  //    public String wsAddress: "",
+
+  // Group id
+  // You can use the command `/sc group <groupId>` to set
+  "groupId": 0,
+
+  // Group to Game format
+  // {id}       User id
+  // {name}     Card or Nickname
+  // {message}  message
+  "groupToGameFormat": "<color=#6699CC>[QQ]</color><color=#99CC99>{name}</color>: {message}",
+
+  // Game to Group format
+  // {nickName}   Player Nick name
+  // {uid}        Player Uid
+  // {message}    message
+  "gameToGroupFormat": "[GC]{nickName}({uid}): {message}",
+
+  //    /**
+  //     * Guild id
+  //     */
+  //    public String guildId: "",
+  //    /**
+  //     * Channel ids
+  //     */
+  //    public List<String> channelIds: new ArrayList<>(),
+
+  // Enable forwarding in-game chat to group chat
+  "isSendToBot": true,
+
+  // Enable receiving group messages and send them to the game
+  "isSendToGame": true,
+
+  // Admin id
+  "adminIds": [0],
+
+  // Admin command prefix
+  "adminPrefix": "/",
+
+  // Is enable login message to bot
+  "sendLoginMessageToBot": true,
+
+  // Login format
+  // {nickName}   Player Nick name
+  // {uid}        Player Uid
+  "loginMessageFormat": "{nickName}({uid}) 加入了服务器",
+
+  // Is enable login message to game
+  "sendLoginMessageToGame": true,
+
+  // Player login message format in game
+  // {nickName}   Player Nick name
+  // {uid}        Player Uid
+  "loginMessageFormatInGame": "<color=#99CC99>{nickName}({uid}) 加入了游戏</color>",
+
+  // Is enable logout message to bot
+  "sendLogoutMessageToBot": true,
+
+  // Player logout message format
+  // {nickName}   Player Nick name
+  // {uid}        Player Uid
+  "logoutMessageFormat": "{nickName}({uid}) 离开了服务器",
+
+  // Is enable logout message to game
+  "sendLogoutMessageToGame": true,
+
+  // Logout message format in game
+  // {nickName}   Player Nick name
+  // {uid}        Player Uid
+  "logoutMessageFormatInGame": "<color=#99CC99>{nickName}({uid}) 离开了游戏</color>",
 }
 ```
 
+## Sensitive word filtering system
+At present, the most basic sensitive word filtering function has been implemented, and a streamlined sensitive word library is attached.
+The thesaurus will be released to the plug-in data directory when it is first started.
+
+The file name is `SensitiveWordList.txt`, and each line contains a sensitive word. You can maintain this file yourself, and you can use `/sc reload` to read it again after modification.
+
+When sensitive words are detected in the in-game player chat, it will not be forwarded and will be printed in the console.
+
+There is currently no penalty mechanism set up, it's just that it's sent out and others can't see it, and I don't know that it hasn't been sent out.
+
+If you have better suggestions, welcome [submit issue](https://github.com/jie65535/gc-openchat-plugin/issues/new)
