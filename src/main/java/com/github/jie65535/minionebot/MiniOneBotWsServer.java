@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MiniOneBotWsServer implements WsStream, Closeable {
 
-    private final String token;
+    private String token;
     private final Logger logger;
     private final Map<WsContext, String> connections = new ConcurrentHashMap<>();
 
@@ -44,6 +44,10 @@ public class MiniOneBotWsServer implements WsStream, Closeable {
         });
 
         logger.info("WebSocket server started at {}", path);
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void onConnect(WsConnectContext ctx) {

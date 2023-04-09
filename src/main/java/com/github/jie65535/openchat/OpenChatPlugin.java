@@ -37,6 +37,10 @@ public final class OpenChatPlugin extends Plugin {
         return instance;
     }
 
+    private OpenChatSystem openChatSystem;
+    public OpenChatSystem getOpenChatSystem() {
+        return  openChatSystem;
+    }
 
     @Override
     public void onLoad() {
@@ -60,7 +64,8 @@ public final class OpenChatPlugin extends Plugin {
         getHandle().registerCommand(new ChatPlayerCommands());
 
         // Set my chat system.
-        getServer().setChatSystem(new OpenChatSystem(this));
+        openChatSystem = new OpenChatSystem(this);
+        getServer().setChatSystem(openChatSystem);
 
         // Log a plugin status message.
         getLogger().info("[OpenChat] Enabled, see https://github.com/jie65535/gc-openchat-plugin");

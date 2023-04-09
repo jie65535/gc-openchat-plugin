@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class MiniOneBot implements WsStream.WsMessageHandler {
     private final Logger logger;
     private final Javalin javalin;
-    private final String token;
+    private String token;
     private MiniOneBotWsServer server;
 //    private MiniOneBotWsClient client;
 
@@ -41,6 +41,21 @@ public class MiniOneBot implements WsStream.WsMessageHandler {
         this.javalin = javalin;
         this.token = token;
         this.logger = logger;
+    }
+
+    /**
+     * 更新OneBot Token
+     * @param token 授权令牌
+     */
+    public void setToken(String token) {
+        if (!Objects.equals(this.token, token)) {
+            this.token = token;
+            if (server != null)
+                server.setToken(token);
+//            if (client != null)
+//                client.setToken(token);
+            logger.info("MiniOneBot Token changed.");
+        }
     }
 
     // region WebSocket

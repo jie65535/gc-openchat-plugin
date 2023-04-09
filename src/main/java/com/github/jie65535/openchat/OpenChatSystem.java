@@ -45,6 +45,19 @@ public class OpenChatSystem extends ChatSystem {
 
         // 获取HttpServer框架
         var javalin = plugin.getHandle().getHttpServer().getHandle();
+        // 构造MiniOneBot
+        miniOneBot = new MiniOneBot(javalin, loadToken(), logger);
+        // 启动WebSocket服务
+        miniOneBot.startWsServer(plugin.getConfig().wsPath);
+        // 订阅群消息事件
+        miniOneBot.subscribeGroupMessageEvent(this::onGroupMessage);
+    }
+
+    /**
+     * 从配置文件中载入WsToken，如果为空则生成一个
+     * @return Token
+     */
+    private String loadToken() {
         var token = plugin.getConfig().wsToken;
         if (token == null || token.isEmpty()) {
             token = Utils.base64Encode(Crypto.createSessionKey(24));
@@ -52,12 +65,14 @@ public class OpenChatSystem extends ChatSystem {
             plugin.saveConfig();
             logger.warn("Detected that wsToken is empty, automatically generated Token for you as follows: {}", token);
         }
-        // 构造MiniOneBot
-        miniOneBot = new MiniOneBot(javalin, token, logger);
-        // 启动WebSocket服务
-        miniOneBot.startWsServer(plugin.getConfig().wsPath);
-        // 订阅群消息事件
-        miniOneBot.subscribeGroupMessageEvent(this::onGroupMessage);
+        return token;
+    }
+
+    /**
+     * 重新载入Token
+     */
+    public void reloadToken() {
+        miniOneBot.setToken(loadToken());
     }
 
     /**

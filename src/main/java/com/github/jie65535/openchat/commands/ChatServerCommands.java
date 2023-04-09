@@ -106,8 +106,12 @@ public class ChatServerCommands implements CommandHandler {
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "reload" -> {
+                // 重载配置
                 plugin.loadConfig();
+                // 重载敏感词
                 plugin.loadSensitiveWordList();
+                // 重载令牌
+                plugin.getOpenChatSystem().reloadToken();
                 CommandHandler.sendMessage(sender, "OK");
             }
             case "group" -> {
