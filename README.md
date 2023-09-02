@@ -14,7 +14,7 @@
 
 在游戏内与服务器账号对话，相当于发送到世界频道，服务器内所有玩家均可收到消息。
 
-## TODO List
+## 功能列表
 - [x] 玩家间聊天
 - [x] 聊天管理命令
 - [x] 发言频率限制
@@ -72,12 +72,10 @@
 7. 在GC中使用 `/sc op <userId(QQ)>` 来设置管理员账号
 8. 现在，理论上已经完成了群服互联，在群里可以看到玩家上下线和聊天，同时玩家也可以在游戏里看到群里聊天，
 你还可以在群里用默认前缀 `/` 来执行命令，
-但是暂时**不会**回复结果，你可能需要自己看控制台来查看执行结果。
 
 
 _值得注意的是，本插件支持的是 [OneBot-v11](https://github.com/botuniverse/onebot-11) 协议，理论上所有支持OneBot-v11 [反向WebSocket](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 的机器人框架都可以连接，不仅限于cqhttp。_
 
-_TODO: 计划会出一个极简的纯对话协议，比OneBot更简单，方便第三方对接。_
 
 ---
 

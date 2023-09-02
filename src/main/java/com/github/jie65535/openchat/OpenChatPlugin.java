@@ -23,6 +23,7 @@ import com.github.jie65535.openchat.utils.SensitiveWordFilter;
 import emu.grasscutter.plugin.Plugin;
 import emu.grasscutter.server.event.EventHandler;
 import emu.grasscutter.server.event.HandlerPriority;
+import emu.grasscutter.server.event.game.ReceiveCommandFeedbackEvent;
 import emu.grasscutter.server.event.player.PlayerJoinEvent;
 import emu.grasscutter.utils.JsonUtils;
 
@@ -57,6 +58,10 @@ public final class OpenChatPlugin extends Plugin {
         new EventHandler<>(PlayerJoinEvent.class)
                 .priority(HandlerPriority.NORMAL)
                 .listener(EventListeners::onJoin)
+                .register(this);
+        new EventHandler<>(ReceiveCommandFeedbackEvent.class)
+                .priority(HandlerPriority.NORMAL)
+                .listener(EventListeners::onCommandResponse)
                 .register(this);
 
         // Register commands.

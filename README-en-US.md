@@ -45,7 +45,6 @@ Server command (requires `server.chat.others` permissions) :
 - `/serverchat op|deop <userId(QQ)>` Set or remove op
   - The account set as op can directly execute commands with the admin prefix in the specified group
   - The command prefix can be set in the configuration file `adminPrefix`, the default is `/`, for example `/sc ban @10002`
-  - At present, there is no reply when executing commands in the group, because the console execution process will only log to the console, which is not easy to capture
 
 `/serverchat` can be aliased as `/sc`
 

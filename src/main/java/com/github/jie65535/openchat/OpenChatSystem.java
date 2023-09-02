@@ -20,7 +20,6 @@ package com.github.jie65535.openchat;
 import com.github.jie65535.minionebot.MiniOneBot;
 import com.github.jie65535.minionebot.events.GroupMessage;
 import emu.grasscutter.GameConstants;
-import emu.grasscutter.command.CommandMap;
 import emu.grasscutter.game.chat.ChatSystem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.event.player.PlayerJoinEvent;
@@ -259,9 +258,9 @@ public class OpenChatSystem extends ChatSystem {
         ) {
             try {
                 logger.info("Command used by op [{}({})]: {}", event.senderCardOrNickname(), event.senderId(), event.message());
-                // 尝试执行管理员命令
-                CommandMap.getInstance().invoke(null, null,
-                        event.message().substring(plugin.getConfig().adminPrefix.length()));
+                String rawCommand = event.message().substring(plugin.getConfig().adminPrefix.length());
+                String result = EventListeners.runConsoleCommand(rawCommand);
+                miniOneBot.sendGroupMessage(event.groupId(), result);
             } catch (Exception ex) {
                 logger.error("Administrator command execution failed", ex);
             }
